@@ -1,0 +1,15 @@
+<div>
+    <br/>
+    $for(posts)$
+    <h4><a href="$url$">$title$</a></h4>
+    $if(teaser)$
+    <p>by $author$</p>
+    <p><span class="glyphicon glyphicon-time"></span> $date$</p>
+    <p>
+        $teaser$
+    </p>
+    <a class="btn btn-primary" href="$url$">Read More<span class="glyphicon glyphicon-chevron-right"></span></a>
+    $endif$
+    <hr>
+    $endfor$
+</div>

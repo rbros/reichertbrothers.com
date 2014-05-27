@@ -1,0 +1,12 @@
+<p>Don't forget to subscribe to our <a href="/atom.xml">atom feed.</a></p>
+$if(taglist)$
+<div class="well">
+    <h4>Categories</h4>
+    <div class="row">
+        <div class="col-lg-12">
+            $taglist$
+        </div>
+    </div>
+</div>
+$endif$
+$partial("templates/post-list.html")$
