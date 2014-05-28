@@ -5,7 +5,7 @@ title: Portfolio
 Here are some recent projects we have developed and contributed to:
 
 <a href="https://hackage.haskell.org/package/hstorchat"><h2>HSTorChat</h2></a>
-<img alt="HsTorChat" src="/images/haskell-logo.png" height="100" />
+<img alt="HsTorChat" src="/images/haskell_logo2.png" height="100" />
 
 A secure messaging application using Onion Routing and [Tor Hidden
 Services](https://tor.eff.org/docs/hidden-services.html.en) that implements the
@@ -28,6 +28,14 @@ of Sociology at The University of Houston -- Downtown.
 
 A paper describing Kirq can be found here:
 [http://link.springer.com/article/10.1007%2Fs11135-012-9694-3](http://link.springer.com/article/10.1007%2Fs11135-012-9694-3).
+
+<a href="https://github.com/creichert/xmobar"><h2>Irssi</h2></a>
+<img alt="Irssi" src="/images/haskell_logo1.png" height="150" />
+
+IrssiNotify displays Irssi pings to your
+[XMobar](https://hackage.haskell.org/package/xmobar). The plugin reads pings
+written to a fifo pipe and uses the
+[X11](http://hackage.haskell.org/package/X11-1.6.0.2) libs.
 
 <a href="https://github.com/creichert/hsgui"><h2>HsGUI</h2></a>
 <img alt="HsGUI" src="/images/hsgui.png" height="150" />
