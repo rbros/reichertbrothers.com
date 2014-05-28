@@ -29,8 +29,8 @@ of Sociology at The University of Houston -- Downtown.
 A paper describing Kirq can be found here:
 [http://link.springer.com/article/10.1007%2Fs11135-012-9694-3](http://link.springer.com/article/10.1007%2Fs11135-012-9694-3).
 
-<a href="https://github.com/creichert/xmobar"><h2>Irssi</h2></a>
-<img alt="Irssi" src="/images/haskell_logo1.png" height="150" />
+<a href="https://github.com/creichert/xmobar"><h2>IrssiNotify</h2></a>
+<img alt="IrssiNotify" src="/images/haskell_logo1.png" height="150" />
 
 IrssiNotify displays Irssi pings to your
 [XMobar](https://hackage.haskell.org/package/xmobar). The plugin reads pings
