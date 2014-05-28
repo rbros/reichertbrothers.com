@@ -37,6 +37,18 @@ IrssiNotify displays Irssi pings to your
 written to a fifo pipe and uses the
 [X11](http://hackage.haskell.org/package/X11-1.6.0.2) libs.
 
+<a href="https://github.com/creichert/phonion"><h2>Phonion</h2></a>
+<img alt="Phonion" src="/images/tor.png" height="100" />
+
+Experimental VoIP and messaging via Tor Hidden Services. Phonion builds on a
+forked version of [Mumble](https://github.com/creichert/mumble), which creates a
+library to use VoIP over Tor via TCP networking.
+
+Phonion also uses
+[Boost.Python](http://www.boost.org/doc/libs/1_55_0/libs/python/doc/) and a
+forked version of [TorChat](https://github.com/prof7bit/TorChat) to establish
+messaging services.
+
 <a href="https://github.com/creichert/hsgui"><h2>HsGUI</h2></a>
 <img alt="HsGUI" src="/images/hsgui.png" height="150" />
 
@@ -60,18 +72,6 @@ Experimental QML and Haskell Integration Using the Fay Compiler.
 An example Bitcoin web application template in Haskell using
 [Happstack](http://happstack.com/page/view-page-slug/1/happstack) and
 [JMacro](http://www.haskell.org/haskellwiki/JMacro).
-
-<a href="https://github.com/creichert/phonion"><h2>Phonion</h2></a>
-<img alt="Phonion" src="/images/tor.png" height="100" />
-
-Experimental VoIP and messaging via Tor Hidden Services. Phonion builds on a
-forked version of [Mumble](https://github.com/creichert/mumble), which creates a
-library to use VoIP over Tor via TCP networking.
-
-Phonion also uses
-[Boost.Python](http://www.boost.org/doc/libs/1_55_0/libs/python/doc/) and a
-forked version of [TorChat](https://github.com/prof7bit/TorChat) to establish
-messaging services.
 
 <a href="http://okular.kde.org/"><h2>Okular</h2></a>
 <img alt="Okular" src="/images/okular.png" height="100" />
