@@ -21,9 +21,10 @@ Haskell/Yesod backend. The problem is most of the code in the module was
 written against an older version of Yesod, and thus, does not compile with
 current versions.
 
-I have proposed a [pull request](https://github.com/snoyberg/yesod-js/pull/2.)
-to update the example to work with Yesod 1.2, so those who stumble upon it are not confused or
-blocked.
+I have proposed a [pull request](https://github.com/snoyberg/yesod-js/pull/2)
+to update the example to work with Yesod 1.2, so those who stumble upon it are
+not confused or blocked. The pull request was merged and should be in the
+[yesod-js](https://github.com/snoyberg/yesod-js) repository now.
 
 <!--more-->
 
