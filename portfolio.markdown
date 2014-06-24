@@ -4,8 +4,20 @@ title: Portfolio
 
 Here are some recent projects we have developed and contributed to:
 
+<a href="https://github.com/creichert/hsqmlstocqt"><h2>HsQMLStocQt</h2></a>
+<img alt="HsQMLStocQt" src="/images/hsqmlstocqt.png" height="300" />
+<img alt="HsQMLStocQt" src="/images/hsqmlstocqt2.png" height="300" />
+<img alt="HsQMLStocQt" src="/images/hsqmlstocqt3.png" height="300" />
+
+Stock market visualization Haskell and Qt Quick.
+
+`hsqmlstockqt` is a Haskell implementation of the
+[StocQt](http://qt-project.org/doc/qt-5/qtquick-demos-stocqt-example.html) Qt
+Quick demo and uses the [HsQML](http://hackage.haskell.org/package/hsqml)
+library.
+
 <a href="https://hackage.haskell.org/package/hstorchat"><h2>HSTorChat</h2></a>
-<img alt="HsTorChat" src="/images/haskell_logo2.png" height="100" />
+<img alt="HsTorChat" src="/images/haskell-logo.png" height="100" />
 
 A secure messaging application using Onion Routing and [Tor Hidden
 Services](https://tor.eff.org/docs/hidden-services.html.en) that implements the
@@ -28,26 +40,6 @@ of Sociology at The University of Houston -- Downtown.
 
 A paper describing Kirq can be found here:
 [http://link.springer.com/article/10.1007%2Fs11135-012-9694-3](http://link.springer.com/article/10.1007%2Fs11135-012-9694-3).
-
-<a href="https://github.com/creichert/xmobar"><h2>IrssiNotify</h2></a>
-<img alt="IrssiNotify" src="/images/haskell_logo1.png" height="150" />
-
-IrssiNotify displays Irssi pings to your
-[XMobar](https://hackage.haskell.org/package/xmobar). The plugin reads pings
-written to a fifo pipe and uses the
-[X11](http://hackage.haskell.org/package/X11-1.6.0.2) libs.
-
-<a href="https://github.com/creichert/phonion"><h2>Phonion</h2></a>
-<img alt="Phonion" src="/images/tor.png" height="100" />
-
-Experimental VoIP and messaging via Tor Hidden Services. Phonion builds on a
-forked version of [Mumble](https://github.com/creichert/mumble), which creates a
-library to use VoIP over Tor via TCP networking.
-
-Phonion also uses
-[Boost.Python](http://www.boost.org/doc/libs/1_55_0/libs/python/doc/) and a
-forked version of [TorChat](https://github.com/prof7bit/TorChat) to establish
-messaging services.
 
 <a href="https://github.com/creichert/hsgui"><h2>HsGUI</h2></a>
 <img alt="HsGUI" src="/images/hsgui.png" height="150" />
@@ -72,6 +64,18 @@ Experimental QML and Haskell Integration Using the Fay Compiler.
 An example Bitcoin web application template in Haskell using
 [Happstack](http://happstack.com/page/view-page-slug/1/happstack) and
 [JMacro](http://www.haskell.org/haskellwiki/JMacro).
+
+<a href="https://github.com/creichert/phonion"><h2>Phonion</h2></a>
+<img alt="Phonion" src="/images/tor.png" height="100" />
+
+Experimental VoIP and messaging via Tor Hidden Services. Phonion builds on a
+forked version of [Mumble](https://github.com/creichert/mumble), which creates a
+library to use VoIP over Tor via TCP networking.
+
+Phonion also uses
+[Boost.Python](http://www.boost.org/doc/libs/1_55_0/libs/python/doc/) and a
+forked version of [TorChat](https://github.com/prof7bit/TorChat) to establish
+messaging services.
 
 <a href="http://okular.kde.org/"><h2>Okular</h2></a>
 <img alt="Okular" src="/images/okular.png" height="100" />

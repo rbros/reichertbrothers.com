@@ -34,8 +34,8 @@ This post describes working with HsQML < 0.3.
 <!--more-->
 
 <div class="warning" >
-As of HsQML 0.3 many of the issues I describe in this post a are fixed. I
-will have a follow-up post soon talking about HsQML 0.3!
+As of HsQML 0.3 many of the issues I describe in this post are fixed. I will
+have a follow-up post soon talking about HsQML 0.3!
 </div>
 
 HsQML is a binding to the QML engine from Haskell. The library is still fairly
@@ -183,6 +183,7 @@ message into the type of `ProtocolMsg` the data represents.
 
 ```haskell
     data ProtocolMsg = Ping | Pong ...
+
     parseResponse :: Parser ProtocolMsg 
     parseResponse =  try parsePing
                  <|> try parsePong
@@ -194,8 +195,11 @@ message into the type of `ProtocolMsg` the data represents.
                  <|> parseMsg
 ```
 
+Check out the definition of the ProtocolMsg
+[here](https://github.com/creichert/hstorchat/blob/master/src/Network/HSTorChat/Protocol.hs#L56).
+
 Check out the definition of the combinators
-[here](https://github.com/creichert/hstorchat/blob/master/src/Protocol.hs).
+[here](https://github.com/creichert/hstorchat/blob/master/src/Network/HSTorChat/Protocol.hs#L119).
 
 # Coming Soon
 

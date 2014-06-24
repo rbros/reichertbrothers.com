@@ -1,0 +1,21 @@
+name:                ReichertBrothers
+version:             0.1.0.0
+synopsis:            Reichert Brothers Website
+homepage:            http://reichertbrothers.com
+license:             BSD3
+license-file:        LICENSE
+author:              Christopher Reichert
+maintainer:          creichert07@gmail.com
+copyright:           2014 Christopher Reichert
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable site
+  main-is: site.hs
+  ld-options: -pthread
+  build-depends: base       >= 4.5.0.0
+               , directory
+               , hakyll     >= 4.2.2.0
+               , old-locale >= 1.0.0.4
+               , process
+               , time       >= 1.4

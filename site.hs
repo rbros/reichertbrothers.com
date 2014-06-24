@@ -1,7 +1,8 @@
---------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend, (<>))
-import           Hakyll
+import Data.Monoid (mappend, (<>))
+import Hakyll
+import System.Directory
+import System.Process
 
 rbrosFeedConfiguration :: FeedConfiguration
 rbrosFeedConfiguration = FeedConfiguration
@@ -12,9 +13,25 @@ rbrosFeedConfiguration = FeedConfiguration
     , feedRoot = "http://reichertbrothers.com"
     }
 
+-- There are a few limitations to the Vroom compiler
+-- and I have not been able to get it working inside
+-- the Hakyll compiler system. This is a very elementary
+-- compilation process for Vroom slides.
+vroom :: [String] -> IO ()
+vroom [] = return ()
+vroom (t:ts) = do
+        _ <- system $ "vroom html --input=talks/hhug/" ++ t ++ ".vroom"
+        _ <- system $ "mkdir -p _site/talks/" ++ t
+        _ <- system $ "cp -r html/* _site/talks/" ++ t
+        vroom ts
+
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = do
+  ts <- getDirectoryContents "talks/hhug"
+  vroom $ map (dropEnd 6) $ filter (((==) "vroom") . dropEnd 5) ts
+  hakyll $ do
+
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
@@ -43,7 +60,8 @@ main = hakyll $ do
                 >>= relativizeUrls
 
     match (fromList ["about.markdown", "services.markdown",
-                     "portfolio.markdown", "contact.markdown"]) $ do
+                     "portfolio.markdown", "contact.markdown",
+                     "talks.markdown"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -81,7 +99,7 @@ main = hakyll $ do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "blog/posts/*"
+            posts <- fmap (take 5) . recentFirst =<< loadAll "blog/posts/*"
             let indexCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Haskell Consulting"  `mappend`
@@ -93,6 +111,8 @@ main = hakyll $ do
                 >>= relativizeUrls
 
     match "templates/*" $ compile templateCompiler
+  where
+    dropEnd n = reverse . drop n . reverse
 
 --------------------------------------------------------------------------------
 tagsCtx :: Tags -> Context String

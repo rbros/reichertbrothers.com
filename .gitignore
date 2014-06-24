@@ -17,3 +17,4 @@ site
 drafts
 .cabal-sandbox/
 cabal.sandbox.config
+html/
