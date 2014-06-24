@@ -17,3 +17,5 @@ executable site
                , hakyll     >= 4.2.2.0
                , old-locale >= 1.0.0.4
                , time       >= 1.4
+               , directory
+               , process
