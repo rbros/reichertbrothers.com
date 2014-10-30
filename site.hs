@@ -26,11 +26,10 @@ vroom (t:ts) = do
         vroom ts
 
 --------------------------------------------------------------------------------
-
 main :: IO ()
 main = do
   ts <- getDirectoryContents "talks/hhug"
-  vroom $ map (reverse . drop 6 . reverse) $ filter (((==) "vroom") . reverse . take 5 . reverse) ts
+  vroom $ map (dropEnd 6) $ filter (((==) "vroom") . dropEnd 5) ts
   hakyll $ do
 
     match "images/*" $ do
@@ -103,7 +102,7 @@ main = do
             posts <- fmap (take 5) . recentFirst =<< loadAll "blog/posts/*"
             let indexCtx =
                     listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Haskell Consulting"  `mappend`
+                    constField "title" "Haskell Development and Consulting"  `mappend`
                     defaultContext
 
             getResourceBody
@@ -112,9 +111,10 @@ main = do
                 >>= relativizeUrls
 
     match "templates/*" $ compile templateCompiler
+  where
+    dropEnd n = reverse . drop n . reverse
 
 --------------------------------------------------------------------------------
-
 tagsCtx :: Tags -> Context String
 tagsCtx tags = field "taglist" (\_ -> renderTagList tags) <>
                tagsField "tags" tags <>

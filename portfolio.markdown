@@ -16,6 +16,15 @@ Stock market visualization Haskell and Qt Quick.
 Quick demo and uses the [HsQML](http://hackage.haskell.org/package/hsqml)
 library.
 
+<a href="http://checkaflip.com"><h2>CheckAFlip</h2></a>
+<img alt="CheckAFlip" src="/images/caf.png" height="150" />
+
+An [eBay](www.ebay.com) average pricing calculator used to determine the value
+of listings.  CheckAFlip is built on [Yesod](http://www.yesodweb.com/) and
+[Fay](https://www.github.com/faylang/fay/wiki/) with a custom REST API for mobile
+clients.
+
+
 <a href="https://hackage.haskell.org/package/hstorchat"><h2>HSTorChat</h2></a>
 <img alt="HsTorChat" src="/images/haskell-logo.png" height="100" />
 
@@ -98,15 +107,6 @@ in C++.
 
 Authored original core of Tomahawk-Android in Java (now maintained by
 [Enno G](https://github.com/mrmaffen).
-
-<a href="http://checkaflip.com"><h2>CheckAFlip</h2></a>
-<img alt="CheckAFlip" src="/images/caf.png" height="150" />
-
-An [eBay](www.ebay.com) average pricing calculator that utilizes data from
-[Craigslist](http://craigslist.org) to identify potential 'flips' for profit.
-CheckAFlip was built on [Python](https://www.python.org/) and
-[Django](https://www.djangoproject.com/) with a custom REST API for mobile
-clients.
 
 <a href="http://www.howtothrift.com/2013/12/checkaflip-mobile-brief-introduction/"><h2>CheckAFlip iOS</h2></a>
 <img alt="CheckAFlip iOS" src="/images/cafios.png" height="150" />
