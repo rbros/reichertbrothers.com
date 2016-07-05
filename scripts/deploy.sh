@@ -30,7 +30,7 @@ git fetch upstream
 git reset upstream/gh-pages
 
 # touch .
-cp -R ../_site/* .
+cp -R $TRAVIS_BUILD_DIR/_site/* .
 
 git add -A .
 git commit -m "rebuild pages at ${rev}"
