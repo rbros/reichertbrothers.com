@@ -19,5 +19,4 @@ script:
   - stack build --fast
 
 after_success:
-  - cd $TRAVIS_BUILD_DIR
-  - ./scripts/deploy
+  - bash $TRAVIS_BUILD_DIR/scripts/deploy.sh
