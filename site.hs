@@ -1,4 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
+
+module Main where
+
 import Data.Monoid (mappend, (<>))
 import Hakyll
 import System.Directory

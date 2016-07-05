@@ -1,9 +1,9 @@
-name:                ReichertBrothers
+name:                reichertbrothers
 version:             0.1.0.0
 synopsis:            Reichert Brothers Website
 homepage:            http://reichertbrothers.com
 license:             BSD3
-license-file:        LICENSE
+-- license-file:        LICENSE
 author:              Christopher Reichert
 maintainer:          christopher@reichertbrothers.com
 copyright:           2014 Christopher Reichert
