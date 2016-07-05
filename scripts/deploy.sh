@@ -23,6 +23,8 @@ git config user.name "Cody Reichert"
 git config user.email "cody@reichertbrothers.com"
 
 # Check out gh-pages branch of reichertbrothers.com repo
+# Note: GH_TOKEN was entered into the Travis-CI environment manually
+# through the UI.
 git remote add upstream "https://$GH_TOKEN@github.com/rbros/reichertbrothers.com.git"
 git fetch upstream
 git reset upstream/gh-pages
