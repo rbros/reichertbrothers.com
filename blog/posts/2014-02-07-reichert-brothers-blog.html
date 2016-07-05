@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Reichert Brothers - The Reichert Brothers Blog</title>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/syntax.css" />
+    </head>
+    <body>
+      <div class="page-container">
+      	<!-- top navbar -->
+          <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+          	  <div class="navbar-header">
+                   <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                   </button>
+                   <a class="navbar-brand" href="../../">Reichert Brothers :: A Haskell Development and Consulting Company</a>
+          	  </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row row-offcanvas row-offcanvas-left">
+              <!-- sidebar -->
+              <div class="col-xs-6 col-sm-3 sidebar-offcanvas navbar-collapse" id="sidebar" role="navigation">
+                  <a href="../../"><img class="logo" src="../../images/RBlogo_noname.png" width="80" /></a>
+                  <ul class="nav">
+                    <li class="active"><a href="../../">Home</a></li>
+                    <li><a href="../../about.html">About</a></li>
+                    <li><a href="../../services.html">Services</a></li>
+                    <li><a href="../../portfolio.html">Portfolio</a></li>
+                    <li><a href="../../contact.html">Contact</a></li>
+                    <li><a href="../../blog.html">Blog</a></li>
+                  </ul>
+             </div>
+              <!-- main area -->
+              <div class="col-xs-12 col-sm-9">
+                <div id="content">
+                    <h1>The Reichert Brothers Blog</h1>
+                    <div class="info">
+    Posted on February  7, 2014
+    
+        by Christopher Reichert
+    
+</div>
+
+<h4 id="welcome-to-the-reichert-brothers-blog">Welcome to the Reichert Brothers Blog!</h4>
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/rblogo.png" alt="Reichert Brothers" style="height:300px" /></p>
+</div>
+<p>We finally built it! Our hope is to give back to the software development community that we have learned so much from. We encounter a lot of peculiar problems throughout our hacking journey and we want to make this a forum to discussion related issues.</p>
+<!--more-->
+<h5 id="what-is-the-blog-built-on">What is the blog built on?</h5>
+<p>This blog (and our entire site) is built on <a href="http://jaspervdj.be/hakyll/">Hakyll</a>, a static site generator written in <a href="http://haskell.org">Haskell</a>.</p>
+<blockquote>
+<p>Static sites are fast, secure, easy to deploy, and manageable using version control. — <cite>Hakyll documentation</cite></p>
+</blockquote>
+<p>If you don’t know any Haskell don’t be intimidated! The amount of Haskell code it takes to get up and running is quite minimal. The rest of this post will be a short tutorial on getting started with Hakyll. This is also covered in <a href="http://jaspervdj.be/hakyll/tutorials/01-installation.html">The Hakyll Documentation</a>.</p>
+<h5 id="how-can-i-build-a-hakyll-site">How can I build a Hakyll site?</h5>
+<p>Hakyll is simple to install if you are familiar with <code>cabal</code>:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cabal</span> install hakyll</code></pre></div>
+<p>Use the <code>hakyll-init</code> executable to generate an example site:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">hakyll-init</span> foo</code></pre></div>
+<p>Then compile your site using <code>ghc</code>:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cd</span> foo
+    <span class="kw">ghc</span> --make -threaded site.hs</code></pre></div>
+<p>You can now run the hakyll preview server to test the site:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">./site</span> preview</code></pre></div>
+<p>Your site should be visible at <a href="http://localhost:8000" class="uri">http://localhost:8000</a>.</p>
+<p>Not only does Hakyll provide the preview server, it also integrates extremely easily with <a href="http://nginx.org">NGinx</a>, <a href="http://apache.org">Apache</a>, and other web servers. Use the build command to compile the site:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">./site.hs</span> build</code></pre></div>
+<p>This command creates a directory <code>_site</code> which contains the compiled site. NGinx, for example, can point directly to this using the root directive:</p>
+<pre><code>root /path/to/foo/_site;</code></pre>
+<p>Happy Hacking!</p>
+
+<hr>
+<!-- the comment box -->
+<div class="well">
+    <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'reichertbrothers'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+                </div>
+              </div><!-- /.col-xs-12 main -->
+          </div><!--/.row-->
+        </div><!--/.container-->
+        <div class="footer">
+          <div class="container" style="padding: 40px;">
+              Copyright © 2013-2014, Reichert Brothers LLC.
+              <br />
+               Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+          </div>
+        </div>
+      </div><!--/.page-container-->
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <script src="../../js/scripts.js"></script>
+    </body>
+</html>

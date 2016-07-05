@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Reichert Brothers - Exploring QML In Haskell</title>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/syntax.css" />
+    </head>
+    <body>
+      <div class="page-container">
+      	<!-- top navbar -->
+          <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+          	  <div class="navbar-header">
+                   <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                   </button>
+                   <a class="navbar-brand" href="../../">Reichert Brothers :: A Haskell Development and Consulting Company</a>
+          	  </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row row-offcanvas row-offcanvas-left">
+              <!-- sidebar -->
+              <div class="col-xs-6 col-sm-3 sidebar-offcanvas navbar-collapse" id="sidebar" role="navigation">
+                  <a href="../../"><img class="logo" src="../../images/RBlogo_noname.png" width="80" /></a>
+                  <ul class="nav">
+                    <li class="active"><a href="../../">Home</a></li>
+                    <li><a href="../../about.html">About</a></li>
+                    <li><a href="../../services.html">Services</a></li>
+                    <li><a href="../../portfolio.html">Portfolio</a></li>
+                    <li><a href="../../contact.html">Contact</a></li>
+                    <li><a href="../../blog.html">Blog</a></li>
+                  </ul>
+             </div>
+              <!-- main area -->
+              <div class="col-xs-12 col-sm-9">
+                <div id="content">
+                    <h1>Exploring QML In Haskell</h1>
+                    <div class="info">
+    Posted on April 30, 2014
+    
+        by Christopher Reichert
+    
+</div>
+
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/haskell_logo2.png" alt="Haskell logo" style="height:200px; float: left; display: inline-block" /></p>
+</div>
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/multiply.png" alt="Plus symbol." style="height:100px; float: left; display: inline-block; padding-left: 40px; margin: 40px 40px" /></p>
+</div>
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/qt-logo.png" alt="Qt logo" style="height:200px; display: inline-block" /></p>
+</div>
+<p>I have recently been experimenting with the Haskell QML binding <a href="http://hackage.haskell.org/package/hsqml">HsQML</a>. I am a big fan of QML and it’s portability. It’s a very flexible language for user interface development and it makes for a powerful combination with Haskell.</p>
+<p>Recently, I wrote about integrating <a href="http://reichertbrothers.com/blog/posts/2014-04-15-qml-haskell-integration-with-fay.html">QML code and Haskell using Fay</a>.</p>
+<p>HsQML, however, is a more direct way of integrating QML and Haskell. The HsQML approach has the value of the Haskell runtime and garbage collector, among other things (though, Fay may compile the garbage collector, not sure).</p>
+<p>This post describes working with HsQML &lt; 0.3.</p>
+<!--more-->
+<div class="warning">
+<p>As of HsQML 0.3 many of the issues I describe in this post are fixed. I will have a follow-up post soon talking about HsQML 0.3!</p>
+</div>
+<p>HsQML is a binding to the QML engine from Haskell. The library is still fairly young but it is extremely useful and can definitely get the job done. The current HsQML packages in Hackage only support Qt4/QtDeclarative but there is Qt5/QtQml support in the <a href="http://hub.darcs.net/komadori/HsQML/">HsQML Darcs Repository</a>. I have tested HsQML with Qt5 and everything seems to be working very well.</p>
+<p>I have begun implementing a <a href="https://github.com/prof7bit/TorChat">TorChat</a> client in Haskell using HsQML. You can find the code on my <a href="https://github.com/creichert/hstorchat">Github</a>. Contributions welcome! HSTorChat uses many basic features of HsQML and can definitely be used as an example for developing more complex user interfaces in QML.</p>
+<p>TorChat is a simple messenger application that is built on top of Tor’s hidden services. When an HSTorChat client is talking to a buddy, outgoing messages are gauranteed to be sent to the correct onion address.</p>
+<blockquote>
+<p>Everyone – including the introduction points, the distributed hash table directory, and of course the clients – can verify that they are talking to the right hidden service</p>
+<p>– https://www.torproject.org/docs/hidden-services.html.en</p>
+</blockquote>
+<p><br /></p>
+<h1 id="hstorchat">HSTorChat</h1>
+<p><br /></p>
+<h4 id="state">State</h4>
+<p>Managing state in a Haskell GUI application is not always trivial. I was largely unable to use Haskell data structures as QML models. I initially attempted to define read-write properties which could be updated from QML. However, I found that with lack of support for property signals I was unable to get QML to always update the views to reflect the state. I was able to work through these issues more easily in HsQML 0.3.</p>
+<p>Because each buddy is managed on a differed thread, there must be some way to coordinate changes with the ui. The buddy list serves as the point of communication between threads and uses an <a href="https://hackage.haskell.org/package/base-4.0.0.0/docs/Control-Concurrent-MVar.html">MVar</a>. When a new buddy authenticates, the corresponding onion address is added to an MVar’d buddy list using <code>takeMVar</code> and <code>putMVar</code> (or <code>withMVar</code> to combine the operations):</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    buds' <span class="ot">&lt;-</span> takeMVar <span class="fu">$</span> _buddies ui'
+    putMVar (_buddies ui') (b<span class="fu">:</span>buds')</code></pre></div>
+<p><strong><em>(This should be done using withMVar)</em></strong></p>
+<p>Since each buddy is managed in it’s own thread, the MVar enables syncing messages from the ui to the corresponding buddy.</p>
+<h4 id="signals">Signals</h4>
+<p>When a new message is received a signal is sent from Haskell to QML.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    m <span class="ot">&lt;-</span> newObject <span class="fu">$</span> <span class="dt">Msg</span> (T.unpack msg) onion
+    fireSignal (<span class="dt">Tagged</span><span class="ot"> ui ::</span> <span class="dt">Tagged</span> <span class="dt">MsgReady</span> (<span class="dt">ObjRef</span> <span class="dt">UI</span>)) m</code></pre></div>
+<p><code>fireSignal</code> is called from the thread managing the Buddy. The HsQML documentation has been updated to reflect that the function safe to call from any thread:</p>
+<p>http://hub.darcs.net/komadori/HsQML/patch/20140507214126-4d2ae</p>
+<h4 id="calling-haskell-functions-from-qml">Calling Haskell functions from QML</h4>
+<p>Calling Haskell functions from QML is quite simple. In GUI.hs, <code>sendMsg</code> defines a function on the main context object which takes three parameters:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"> <span class="kw">instance</span> <span class="dt">Object</span> <span class="dt">UI</span> <span class="kw">where</span>
+      classDef <span class="fu">=</span> defClass [
+            , defMethod <span class="st">&quot;sendMsg&quot;</span> sendMsg
+            <span class="fu">...</span>
+            ]
+    
+<span class="ot">    sendMsg ::</span> <span class="dt">ObjRef</span> <span class="dt">UI</span> <span class="ot">-&gt;</span> <span class="dt">T.Text</span> <span class="ot">-&gt;</span> <span class="dt">T.Text</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
+    sendMsg ui onion msg <span class="fu">=</span> <span class="kw">do</span>
+        <span class="kw">let</span> ui' <span class="fu">=</span> fromObjRef ui
+        buds <span class="ot">&lt;-</span> readMVar <span class="fu">$</span> _buddies ui'
+        sendMsgTo buds
+      <span class="kw">where</span>
+        sendMsgTo []   <span class="fu">=</span> putStrLn <span class="st">&quot;Unable to send msg: no buddies.&quot;</span>
+        sendMsgTo buds <span class="fu">=</span> <span class="kw">do</span>
+            <span class="co">-- Filter proper buddy from list.</span>
+            <span class="kw">let</span> buddy <span class="fu">=</span> head <span class="fu">$</span> filter (λb <span class="ot">-&gt;</span> _addy b <span class="fu">==</span> T.unpack onion) buds
+            hPutStrLn (_out_conn buddy) <span class="fu">$</span> lowercase <span class="fu">$</span> filter (<span class="fu">/=</span> <span class="ch">'&quot;'</span>) <span class="fu">$</span> show <span class="fu">$</span> <span class="dt">Message</span> msg
+            return ()</code></pre></div>
+<p><code>sendMsg</code> takes a reference to the UI object, a buddy name, and a message.</p>
+<p>I admit, It would be better to experiment with constructing and passing a complete Msg type from QML instead of the onion and msg individually. The function definition could be more readable.</p>
+<p>If you happen to peruse the code, you might notice there is also some discrepency between the ProtocolMsg Message and Msg type. I hope to combine the two in the next few revisions of HSTorChat.</p>
+<p>Here is an example call to <code>sendMsg</code> in the <code>onAccepted</code> slot of a QML <a href="http://qt-project.org/doc/qt-4.8/qml-textinput.html">TextInput</a> component.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">    onAccepted<span class="op">:</span> <span class="op">{</span> <span class="at">sendMsg</span>(<span class="st">&quot;buddyname&quot;</span><span class="op">,</span> <span class="st">&quot;buddyonion&quot;</span>) <span class="op">}</span></code></pre></div>
+<h4 id="modelview">Model/View</h4>
+<p>There is no straight forward way to implement data models for QML in Haskell that I am aware of. It would be nice to support actual <code>ListModel</code> declarations some way from within Haskell.</p>
+<p>Update (5/6/2014): As of HsQML 0.3 I have had success using Haskell Lists as QML data models. See here for details <a href="https://github.com/creichert/hstorchat/commit/f3175e939fa5c10735e5fcdeec02a9383fa31d74" class="uri">https://github.com/creichert/hstorchat/commit/f3175e939fa5c10735e5fcdeec02a9383fa31d74</a></p>
+<h4 id="error-reporting">Error reporting</h4>
+<p>One thing that is very difficult is getting the output of errors in the event of a QML crash or error creating a component. Most of the time the failure is silent. I have not yet found a way to work around this besides testing the qml file separately with <code>qmlscene</code>.</p>
+<p>Update: HsQML 0.3, however, has had fantastic error reporting.</p>
+<h1 id="side-note">Side-Note</h1>
+<p><a href="https://hackage.haskell.org/package/attoparsec">Attoparsec</a> and <a href="https://hackage.haskell.org/package/parsec">Parsec</a> are extremely cool parser combinator libraries for Haskell.</p>
+<p>Anytime HSTorChat receives a new data packet on it’s input connection it attempts to apply a series of parser combinators which basically turn the message into the type of <code>ProtocolMsg</code> the data represents.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    <span class="kw">data</span> <span class="dt">ProtocolMsg</span> <span class="fu">=</span> <span class="dt">Ping</span> <span class="fu">|</span> <span class="dt">Pong</span> <span class="fu">...</span>
+
+<span class="ot">    parseResponse ::</span> <span class="dt">Parser</span> <span class="dt">ProtocolMsg</span> 
+    parseResponse <span class="fu">=</span>  try parsePing
+                 <span class="fu">&lt;|&gt;</span> try parsePong
+                 <span class="fu">&lt;|&gt;</span> try parseVersion
+                 <span class="fu">&lt;|&gt;</span> try parseClient
+                 <span class="fu">&lt;|&gt;</span> try parseStatus
+                 <span class="fu">&lt;|&gt;</span> try parseAddMe
+                 <span class="fu">&lt;|&gt;</span> try parseDelayedMsg
+                 <span class="fu">&lt;|&gt;</span> parseMsg</code></pre></div>
+<p>Check out the definition of the ProtocolMsg <a href="https://github.com/creichert/hstorchat/blob/master/src/Network/HSTorChat/Protocol.hs#L56">here</a>.</p>
+<p>Check out the definition of the combinators <a href="https://github.com/creichert/hstorchat/blob/master/src/Network/HSTorChat/Protocol.hs#L119">here</a>.</p>
+<h1 id="coming-soon">Coming Soon</h1>
+<p>HSTorchat in it’s current state accomplishes quite a lot. My next goal is to make HSTorChat into a full fledged chat client and port it to the Raspberry Pi.</p>
+<p>I will also be experimenting with using Fay to generate JavaScript library code in an HsQML application. More to come!</p>
+<p>Happy Hacking!</p>
+
+<hr>
+<!-- the comment box -->
+<div class="well">
+    <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'reichertbrothers'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+                </div>
+              </div><!-- /.col-xs-12 main -->
+          </div><!--/.row-->
+        </div><!--/.container-->
+        <div class="footer">
+          <div class="container" style="padding: 40px;">
+              Copyright © 2013-2014, Reichert Brothers LLC.
+              <br />
+               Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+          </div>
+        </div>
+      </div><!--/.page-container-->
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <script src="../../js/scripts.js"></script>
+    </body>
+</html>

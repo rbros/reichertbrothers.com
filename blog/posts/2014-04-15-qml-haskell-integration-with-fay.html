@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Reichert Brothers - QML integration with Fay and Haskell</title>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/syntax.css" />
+    </head>
+    <body>
+      <div class="page-container">
+      	<!-- top navbar -->
+          <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+          	  <div class="navbar-header">
+                   <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                   </button>
+                   <a class="navbar-brand" href="../../">Reichert Brothers :: A Haskell Development and Consulting Company</a>
+          	  </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row row-offcanvas row-offcanvas-left">
+              <!-- sidebar -->
+              <div class="col-xs-6 col-sm-3 sidebar-offcanvas navbar-collapse" id="sidebar" role="navigation">
+                  <a href="../../"><img class="logo" src="../../images/RBlogo_noname.png" width="80" /></a>
+                  <ul class="nav">
+                    <li class="active"><a href="../../">Home</a></li>
+                    <li><a href="../../about.html">About</a></li>
+                    <li><a href="../../services.html">Services</a></li>
+                    <li><a href="../../portfolio.html">Portfolio</a></li>
+                    <li><a href="../../contact.html">Contact</a></li>
+                    <li><a href="../../blog.html">Blog</a></li>
+                  </ul>
+             </div>
+              <!-- main area -->
+              <div class="col-xs-12 col-sm-9">
+                <div id="content">
+                    <h1>QML integration with Fay and Haskell</h1>
+                    <div class="info">
+    Posted on April 15, 2014
+    
+        by Christopher Reichert
+    
+</div>
+
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/qt-logo.png" alt="Qt logo" style="height:200px; float: left; display: inline-block" /></p>
+</div>
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/plus.png" alt="Plus symbol." style="height:100px; float: left; display: inline-block; padding-left: 40px; margin: 40px 40px" /></p>
+</div>
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/haskell_logo2.png" alt="Haskell logo" style="height:200px; display: inline-block" /></p>
+</div>
+<p>If you are reading this, you are probably more or less aware of the <a href="http://www.haskell.org/haskellwiki/The_JavaScript_Problem">JavaScript Problem</a>. Like many, I frequently work with JavaScript. There is no avoiding JavaScript on the web and many corners of the software development industry.</p>
+<p>My most recent JavaScript endeavor has been in the world of <a href="https://qt-project.org/wiki/Qt_5.0">Qt5</a> and <a href="http://qt-project.org/doc/qt-5/qtqml-index.html">QML</a>. QML is a solid toolkit for writing fluid and cross-platform user interfaces.</p>
+<p>Recently, while experimenting with QML, I had a revelation. What if it was possible to generate QML code from Haskell using Fay. Eureka!</p>
+<!--more-->
+<p>Luckily, <a href="https://github.com/faylang/fay/wiki">Fay</a> is up for the job. Fay is a Haskell to Javascript compiler which supports a proper subset of the Haskell language. Fay has several distinct advantageous:</p>
+<blockquote>
+<ul>
+<li>Statically typed</li>
+<li>Lazy</li>
+<li>Pure by default</li>
+<li>Compiles to JavaScript</li>
+<li>Has fundamental data types (Double, String, etc.) based upon what JS can support, and compound data types (ADTs and GADTs)</li>
+<li>Outputs minifier-aware code for small compressed size</li>
+<li>Has a trivial foreign function interface to JavaScript</li>
+<li>Supports cabal installation of Fay packages</li>
+<li>Can automatically transcode values to/from JSON using the FFI</li>
+<li>Provides an API to transcode on the server side as well</li>
+<li>Lets you call Fay code from JavaScript</li>
+<li>Has the Fay monad for side effects (think of it like IO)</li>
+</ul>
+<p>– Fay Wiki</p>
+</blockquote>
+<p>This post will cover how to integrate a JavaScript library generated using Fay into a QML application. The library will be developed purely in Haskell while the UI code will be written in QML.</p>
+<p>QML, while a subset of JavaScript, is essentially it’s own language. Fay does not understand QML and therefore cannot compile it to JavaScript yet.</p>
+<p>My goal is to, first, get the JS library integration functioning. After that, the issue of getting Fay to compile QML Forms written in Haskell can be evaluated and potentially implemented.</p>
+<p>The most up-to-date version of the <code>qmlfay</code> example source is on my <a href="https://github.com/creichert/qmlfay">Github</a>. I would like to get this unique example into the Fay repository if anyone else finds it useful.</p>
+<h1 id="interfacing-a-haskell-library-with-qml-using-fay">Interfacing a Haskell Library With QML Using Fay</h1>
+<p>The first objective is to pass <a href="http://qt-project.org/doc/qt-4.8/qml-qtobject.html">QtObjects</a>, created in QML, to a Fay JavaScript library. In the library, properties should be read from the QtObject and the data can be processed accordingly.</p>
+<p>Make sure <code>fay</code> and <code>fay-base</code> are installed.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cabal</span> install fay fay-base</code></pre></div>
+<h5 id="haskell">Haskell</h5>
+<p>Let’s start with the fun part. The Haskell module is named <code>Library</code> and exports a function named <code>qObjectName</code>. This function should return the objectName property of a QML <a href="http://qt-project.org/doc/qt-4.8/qml-qtobject.html">QtObject</a>.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    <span class="kw">module</span> <span class="dt">Library</span> (qObjectName) <span class="kw">where</span></code></pre></div>
+<p>The data type QObject is defined to represent our QML component (which is based on the QtObject element). Unfortunately, I have not yet found a way to generate this record based on the actual C++ QObject type properties. Fortunately, we only need fields for each property used. As far as I can tell, Fay matches the record entry with the JavaScript object’s property when applying this type.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    <span class="kw">data</span> <span class="dt">QObject</span> <span class="fu">=</span> <span class="dt">QObject</span> {<span class="ot"> objectName ::</span> <span class="dt">String</span> }</code></pre></div>
+<p>The function <code>qObjectName</code> takes a QObject parameter and returns the objectName. <code>undefined</code> will be returned if the <code>objectName</code> property doesn’t exist.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">    qObjectName ::</span> <span class="dt">QObject</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+    qObjectName qo <span class="fu">=</span> objectName qo</code></pre></div>
+<p>Next, some boilerplate is necessary to initialize the QML application.</p>
+<h2 id="boilerplate">Boilerplate</h2>
+<p>First, we need a main.cpp file to run the application. While it is technically possible to run the app using <code>qmlscene</code>, I wanted to show an example with qmake so it can be more easily adapted to existing qmake build systems.</p>
+<h5 id="main.cpp">Main.cpp</h5>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">    <span class="ot">#include &lt;QGuiApplication&gt;</span>
+    <span class="ot">#include &lt;QQuickView&gt;</span>
+    <span class="ot">#include &lt;QUrl&gt;</span>
+
+    <span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv) {
+    
+        QGuiApplication a(argc, argv);
+    
+        QQuickView view;
+        view.setSource(<span class="ot">QUrl</span>(<span class="st">&quot;./Main.qml&quot;</span>));
+        view.show();
+    
+        <span class="kw">return</span> a.exec();
+    }</code></pre></div>
+<p>The <code>QQuickView</code>’s source is set to <code>Main.qml</code> which is our QML entry point.</p>
+<h5 id="main.qml">Main.qml</h5>
+<p><code>Main.qml</code> starts off with imports. Our Fay generated JavaScript library, <code>Library.js</code>, is a qualified import named <code>Library</code>.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="im">import</span> QtQuick <span class="fl">2.0</span> 
+<span class="im">import</span> <span class="st">&quot;Library.js&quot;</span> <span class="im">as</span> Library</code></pre></div>
+<p>Next, there is a <code>Rectangle</code> element. The <code>objectName</code> property, which will be accessed from <code>Library.js</code>, is set to <code>&quot;MyObject&quot;</code>.</p>
+<p>We set the component <code>id</code> to <code>page</code> for reference.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">Rectangle <span class="op">{</span>
+    <span class="dt">id</span><span class="op">:</span> page
+    <span class="dt">width</span><span class="op">:</span> <span class="dv">100</span><span class="op">;</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">100</span> 
+    <span class="dt">objectName</span><span class="op">:</span> <span class="st">&quot;MyObject&quot;</span>
+
+    <span class="va">Component</span>.<span class="at">onCompleted</span><span class="op">:</span> <span class="op">{</span></code></pre></div>
+<p>After a reference to the <code>Library</code> object is retrieved, it’s possible to run <code>L.objectName(page)</code>. Note that the id is being passed to the <code>qObjectName</code> function. The id is reference to the JavaScript object <code>page</code>.</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">        <span class="kw">var</span> L <span class="op">=</span> <span class="va">Library</span>.<span class="va">Strict</span>.<span class="at">Library</span><span class="op">;</span> <span class="co">// Pass --strict to fay compiler.</span>
+        <span class="va">console</span>.<span class="at">log</span>(<span class="va">L</span>.<span class="at">qObjectName</span>(page))
+    }   
+}</code></pre></div>
+<h5 id="qmlfay.pro">qmlfay.pro</h5>
+<p>The qmake project file defines how the project should be built. <code>qmake</code> offers macros to extend the build with extra compilers. This should work perfectly for the Fay compiler build rules as their compilation is independent of the C++ sources.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">TEMPLATE</span> = app 
+    <span class="kw">TARGET</span> = qmlfay
+    <span class="kw">INCLUDEPATH</span> += .
+    
+    <span class="kw">QT</span> += gui quick
+    <span class="kw">CONFIG</span> += target_predeps
+    
+    <span class="kw">SOURCES</span> += main.cpp
+    <span class="kw">FAY_SOURCES</span> += Library.hs
+    
+    <span class="kw">fay.name</span> = fay compiling
+    <span class="kw">fay.input</span> = FAY_SOURCES
+    <span class="kw">fay.output</span> = <span class="ot">${QMAKE_FILE_IN_PATH}</span>/<span class="ot">${QMAKE_FILE_BASE}</span>.js</code></pre></div>
+<p>Now the actual compile command is defined. Note the <code>--strict</code> flag.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">fay.commands</span> = fay <span class="ot">${QMAKE_FILE_NAME}</span> -p --strict <span class="ot">${QMAKE_FILE_BASE}</span>
+    <span class="kw">fay.variable_out</span> = PRE_TARGETDEPS
+    <span class="kw">QMAKE_EXTRA_COMPILERS</span> += fay </code></pre></div>
+<h2 id="compile-and-run">Compile and Run</h2>
+<p>Now compile and run the application.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">qmake-qt5</span> .
+    <span class="kw">make</span>
+    <span class="kw">./qmlfay</span></code></pre></div>
+<h2 id="issues">Issues</h2>
+<h5 id="expected-token-identifier-error">Expected token <code>identifier</code> error:</h5>
+<p>You might run into the following error importing the JavaScript sources from QML:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    $ <span class="kw">./qmlfay</span> 
+    <span class="kw">file</span>:///.../dev/qmlfay/Main.qml:3:1: Script file:///.../dev/qmlfay/Library.js unavailable 
+         <span class="kw">import</span> <span class="st">&quot;Library.js&quot;</span> as Library 
+         ^
+    <span class="kw">file</span>:///.../dev/qmlfay/Library.js:2230:17: Expected token <span class="kw">`identifier</span><span class="st">' </span>
+<span class="st">                     var as = $tmp1.cdr;</span></code></pre></div>
+<p>The workaround, for the time being, is to comment out the following functions from the generated javascript <code>Library.js</code>: <code>zipWith</code>,<code>zipWith3</code>,<code>zip</code>,<code>zip3</code>. This also means these functions are unusable for now.</p>
+<h2 id="conclusions">Conclusions</h2>
+<p>My goal is to bring a usable QtQuick experience to Haskell through the use of Fay. Once I have developed tighter library integration I plan to attempt to write a pass in the Fay compiler to handle pure qml.</p>
+<p>I’m not unambiguously certain that all of these things are possible but this is an itch I must scratch.</p>
+<p>Happy Hacking!</p>
+
+<hr>
+<!-- the comment box -->
+<div class="well">
+    <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'reichertbrothers'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+                </div>
+              </div><!-- /.col-xs-12 main -->
+          </div><!--/.row-->
+        </div><!--/.container-->
+        <div class="footer">
+          <div class="container" style="padding: 40px;">
+              Copyright © 2013-2014, Reichert Brothers LLC.
+              <br />
+               Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+          </div>
+        </div>
+      </div><!--/.page-container-->
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <script src="../../js/scripts.js"></script>
+    </body>
+</html>

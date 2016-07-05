@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Reichert Brothers - GHC Hacking</title>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/syntax.css" />
+    </head>
+    <body>
+      <div class="page-container">
+      	<!-- top navbar -->
+          <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+          	  <div class="navbar-header">
+                   <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                   </button>
+                   <a class="navbar-brand" href="../../">Reichert Brothers :: A Haskell Development and Consulting Company</a>
+          	  </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row row-offcanvas row-offcanvas-left">
+              <!-- sidebar -->
+              <div class="col-xs-6 col-sm-3 sidebar-offcanvas navbar-collapse" id="sidebar" role="navigation">
+                  <a href="../../"><img class="logo" src="../../images/RBlogo_noname.png" width="80" /></a>
+                  <ul class="nav">
+                    <li class="active"><a href="../../">Home</a></li>
+                    <li><a href="../../about.html">About</a></li>
+                    <li><a href="../../services.html">Services</a></li>
+                    <li><a href="../../portfolio.html">Portfolio</a></li>
+                    <li><a href="../../contact.html">Contact</a></li>
+                    <li><a href="../../blog.html">Blog</a></li>
+                  </ul>
+             </div>
+              <!-- main area -->
+              <div class="col-xs-12 col-sm-9">
+                <div id="content">
+                    <h1>GHC Hacking</h1>
+                    <div class="info">
+    Posted on April 11, 2014
+    
+        by Christopher Reichert
+    
+</div>
+
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/haskell_logo2.png" alt="Haskell Lambda" style="height: 250px;" /></p>
+</div>
+<p>If you haven’t figured it out already, I am a <a href="http://haskell.org/">Haskell</a> fanatic. Haskell is a fantastic language that has continuously driven me to explore new programming concepts and improve my own skill. Quite naturally, I am intrigued by <a href>GHC – The Glasgow Haskell Compiler</a>. GHC is an open-source native code compiler for Haskell. GHC is written in Haskell with the majority of the runtime system written in C and C-- <a href="#0">[0]</a>.</p>
+<p>This post describes how to:</p>
+<ul>
+<li>Check out and build the ghc source.</li>
+<li>Add libraries to your inplace ghc instance.</li>
+<li>Make a trivial change to GHCi.</li>
+</ul>
+<!--more-->
+<p>Some of the highlights of the GHC compiler are described on <a href="http://haskell.org/ghc">haskell.org/ghc</a>:</p>
+<blockquote>
+<ul>
+<li><p>GHC supports the entire Haskell 2010 language plus a wide variety of extensions.</p></li>
+<li><p>GHC has particularly good support for concurrency and parallelism, including support for Software Transactional Memory (STM).</p></li>
+<li><p>GHC generates fast code, particularly for concurrent programs. Take a look at GHC’s performance on The Computer Language Benchmarks Game.</p></li>
+<li><p>GHC works on several platforms including Windows, Mac, Linux, most varieties of Unix, and several different processor architectures. There are detailed instructions for porting GHC to a new platform.</p></li>
+<li><p>GHC has extensive optimisation capabilities, including inter-module optimisation.</p></li>
+<li><p>GHC compiles Haskell code either directly to native code or using LLVM as a back-end. GHC can also generate C code as an intermediate target for porting to new platforms. The interactive environment compiles Haskell to bytecode, and supports execution of mixed bytecode/compiled programs.</p></li>
+<li><p>Profiling is supported, both by time/allocation and various kinds of heap profiling.</p></li>
+<li><p>GHC comes with several libraries, and thousands more are available on Hackage.</p></li>
+</ul>
+</blockquote>
+<p>That’s a lot of great reasons to give the compiler a closer look. Before we get started, there are tons of resources to be found on the <a href="http://www.haskell.org/ghc/">GHC wiki</a> and even on the <a href="https://github.com/ghc/ghc">GHC github</a>.</p>
+<h2 id="compiling-ghc">Compiling GHC</h2>
+<p>Compiling GHC is actually fairly straightforward.</p>
+<ol style="list-style-type: decimal">
+<li>Get the code:</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">git</span> clone git@github.com:ghc/ghc.git</code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Sync the repository:</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cd</span> ghc
+    <span class="kw">./sync-all</span> get
+    <span class="kw">perl</span> boot</code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Configure and build:</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">./configure</span>
+    <span class="kw">make</span> -j4</code></pre></div>
+<p>This will take about an hour. If all is succesful you should have your shiny new GHC compiler in <code>./inplace/bin/ghc-stage2</code>.</p>
+<h2 id="adding-extra-package-to-inplace-ghc.">Adding Extra Package to inplace GHC.</h2>
+<p>Assuming you have a somewhat recent version of <code>cabal</code> installed, you can add extra packages to your inplace GHC using:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cabal</span> install --with-compiler=/path/to/ghc/inplace/bin/ghc-stage2 <span class="kw">&lt;</span>package<span class="kw">&gt;</span></code></pre></div>
+<p>You should then be able to list packages using <code>ghc-pkg</code>:</p>
+<pre><code>    ./inplace/bin/ghc-pkg list</code></pre>
+<h2 id="making-changes-to-ghc">Making changes to GHC</h2>
+<p>The goal is to hack on GHC so let’s make a change. As a trivial example, I will change the banner text for GHCi.</p>
+<p>First, open <code>GHC/InteractiveUI.hs</code>.</p>
+<p>On line 128 we see the function for showing the GHCi welcome msg.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    <span class="dt">GHCiWelcomeMsg</span><span class="ot"> ::</span> <span class="dt">String</span>
+    <span class="dt">GHCiWelcomeMsg</span> <span class="fu">=</span> <span class="st">&quot;GHCi, version &quot;</span> <span class="fu">++</span> cProjectVersion <span class="fu">++</span>
+                     <span class="st">&quot;: http://www.haskell.org/GHC/  :? for help&quot;</span></code></pre></div>
+<p>Next, add your own flair to the banner:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">    <span class="dt">GHCiWelcomeMsg</span><span class="ot"> ::</span> <span class="dt">String</span>
+    <span class="dt">GHCiWelcomeMsg</span> <span class="fu">=</span> <span class="st">&quot;Hello GHC!\n&quot;</span> <span class="fu">++</span> <span class="st">&quot;GHCi, version &quot;</span> <span class="fu">++</span> cProjectVersion <span class="fu">++</span>
+                     <span class="st">&quot;: http://www.haskell.org/GHC/  :? for help&quot;</span></code></pre></div>
+<p>The quickest way to recompile GHC after making changes like this is to run <code>make stage=2</code> from the GHC directory.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cd</span> <span class="ot">$(</span><span class="kw">TOP</span><span class="ot">)</span>/ghc
+    <span class="kw">make</span> 2</code></pre></div>
+<p><code>make 2</code> is an alias for <code>make stage=2 FAST=YES</code>.</p>
+<p>You can find more information on that process <a href="https://GHC.haskell.org/trac/GHC/wiki/Building/Using#DevelopinginaGHCbuildtree">here</a>.</p>
+<p>Now run GHCi with your new flair:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    $ <span class="ot">$(</span><span class="kw">TOP</span><span class="ot">)</span><span class="kw">/inplace/bin/GHC-stage2</span> --interactive
+    <span class="kw">Hello</span> GHC!
+    <span class="kw">GHCi</span>, version 7.9.20140412: http://www.haskell.org/GHC/  :? for help
+    <span class="kw">Loading</span> package GHC-prim ... linking ... done.
+    <span class="kw">Loading</span> package integer-gmp ... linking ... done.
+    <span class="kw">Loading</span> package base ... linking ... done.
+    <span class="kw">Prelude&gt;</span> </code></pre></div>
+<p>Happy Hacking!</p>
+<hr />
+<h5 id="httpen.wikipedia.orgwikiglasgow_haskell_compilerarchitecture"><a name="0"></a>[0] - <a href="http://en.wikipedia.org/wiki/Glasgow_Haskell_Compiler#Architecture" class="uri">http://en.wikipedia.org/wiki/Glasgow_Haskell_Compiler#Architecture</a></h5>
+
+<hr>
+<!-- the comment box -->
+<div class="well">
+    <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'reichertbrothers'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+                </div>
+              </div><!-- /.col-xs-12 main -->
+          </div><!--/.row-->
+        </div><!--/.container-->
+        <div class="footer">
+          <div class="container" style="padding: 40px;">
+              Copyright © 2013-2014, Reichert Brothers LLC.
+              <br />
+               Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+          </div>
+        </div>
+      </div><!--/.page-container-->
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <script src="../../js/scripts.js"></script>
+    </body>
+</html>

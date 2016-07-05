@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Reichert Brothers - The WP-Evernote Plugin</title>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/syntax.css" />
+    </head>
+    <body>
+      <div class="page-container">
+      	<!-- top navbar -->
+          <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+          	  <div class="navbar-header">
+                   <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                   </button>
+                   <a class="navbar-brand" href="../../">Reichert Brothers :: A Haskell Development and Consulting Company</a>
+          	  </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row row-offcanvas row-offcanvas-left">
+              <!-- sidebar -->
+              <div class="col-xs-6 col-sm-3 sidebar-offcanvas navbar-collapse" id="sidebar" role="navigation">
+                  <a href="../../"><img class="logo" src="../../images/RBlogo_noname.png" width="80" /></a>
+                  <ul class="nav">
+                    <li class="active"><a href="../../">Home</a></li>
+                    <li><a href="../../about.html">About</a></li>
+                    <li><a href="../../services.html">Services</a></li>
+                    <li><a href="../../portfolio.html">Portfolio</a></li>
+                    <li><a href="../../contact.html">Contact</a></li>
+                    <li><a href="../../blog.html">Blog</a></li>
+                  </ul>
+             </div>
+              <!-- main area -->
+              <div class="col-xs-12 col-sm-9">
+                <div id="content">
+                    <h1>The WP-Evernote Plugin</h1>
+                    <div class="info">
+    Posted on April  6, 2014
+    
+        by Christopher Reichert
+    
+</div>
+
+<div style="text-align:center" markdown="1">
+<p><img src="../../images/wp-evernote.png" alt="WP-Evernote logo" style="height:300px" /></p>
+</div>
+<hr>
+<h6 id="tldr-we-wrote-an-evernote-plugin-for-wordpress-wp-evernote">TL;DR We wrote an Evernote Plugin for Wordpress: <a href="https://github.com/creichert/wpevernote">WP-Evernote</a></h6>
+<p>Recently, my brother and I were asked to add support for publishing blog posts on a <a href="http://wordpress.org">Wordpress</a> site from <a href="http://evernote.com">Evernote</a>. While taking a look at some existing plugins that might support this workflow, I came across <a href="http://wordpress.org/plugins/everpress/">Everpress</a>. Unfortunatly, Everpress is based off using an RSS feed which is no longer supported by Evernote (and hasn’t been for some time).</p>
+<!--more-->
+<p>We took this awesome opportunity to develop a custom Wordpress plugin using the Evernote api. WP-Evernote can publish notes in an Evernote public notebook to wordpress posts and also keep them up-to-date. WP-Evernote is still under development and can be found on my <a href="https://github.com/creichert/wpevernote">Github</a>. WP-Evernote is written in PHP and uses the <a href="https://github.com/evernote/evernote-sdk-php">Evernote PHP SDK</a>.</p>
+<p>This post describes how to install and test the current development version of WP-Evernote.</p>
+<div class="warning">
+<p>If you do not know how to use Git I will be more than happy to create a zip archive for you. I will be providing zip archive release files on Github when the plugin is more user friendly.</p>
+</div>
+<p></br></p>
+<h3 id="install">Install</h3>
+<p>Navigate to the Wordpress plugin directory:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cd</span> wp-content/plugins/
+    <span class="kw">git</span> clone git@github.com:creichert/wpeverpress</code></pre></div>
+<p>There should now be a copy of the wpeverpress source in the Wordpress plugin directory. There are a few files of interest in the plugin:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    $ <span class="kw">tree</span> wpevernote
+        <span class="kw">wpevernote</span>
+        ├── <span class="kw">evernote-sdk-php</span>
+        ├── <span class="kw">readme.txt</span>
+        ├── <span class="kw">wpevernote-panel.html</span>
+        └── <span class="kw">wpevernote.php</span></code></pre></div>
+<p><code>wpevernote.php</code> contains the php code that drives the plugin. <code>wpevernote-panel.html</code> contains the WP-Evernote settings panel. <code>evernote-sdk-php</code> contains the Evernote api client library. The <code>readme.txt</code> file contains documentation about wpevernote.</p>
+<h3 id="configure">Configure</h3>
+<p>In Wordpress, Go to the <code>Settings -&gt; WP Evernote</code> settings panel.</p>
+<p>The first thing you must do is setup api keys so you can fetch data from Evernote. To get API keys go to the <a href="http://dev.evernote.com/doc/">Evernote API</a> website. Click on the “Get An API Key” button and enter the form details:</p>
+<ul>
+<li>Evernote Username</li>
+<li>Developer Name</li>
+<li>Developer Email</li>
+<li>Organization</li>
+<li>App Name</li>
+<li>Describe app</li>
+</ul>
+<p>You will be presented with your api credentials immediately. These keys will only work on the Evernote sandbox website and are not enabled for the production website. There is a small process involved in getting these api keys authorized to use the production servers.</p>
+<p>Go back to the WP-Evernote settings panel and enter in the consumer key and consumer secret in the Settings form. Then hit “Save Settings”.</p>
+<p>You should be redirected to an Evernote OAuth authentication website. You must Authorize the plugin here in order for WP-Evernote access to the Evernote data.</p>
+<p>Upon successful authentication, you will be directed back to the WP-Evernote settings panel. Now you can add your first notebook.</p>
+<div class="warning">
+<p>The Evernote API uses OAuth for authentication. You must be on a valid url capable of dns lookup. This is a major limitation of testing sandbox data. You can get access to your sandbox auth token directly to avert this issue.</p>
+</div>
+<p><br /></p>
+<h3 id="add-a-notebook">Add A Notebook</h3>
+<p>Assuming you authenticated correctly, it’s time to add your first notebook. In order to add a notebook, the notebook must be public.</p>
+<p>Place the full url of your public notebook in the <code>Publice notebook url</code> form area then click the <code>Add Notebook</code> button. If your notebook was added correctly you should now see it in the <code>Current Notebooks</code> area.</p>
+<p>A post will be created for each note in your notebooks. The posts are uniquely identified by the Evenote guid for notes. Therefore, if you were to change the title of the note in evernote and update your notebooks, they will properly import and update the correct posts without creating duplicates.</p>
+<h3 id="updating-your-notebooks">Updating your notebooks</h3>
+<p>Support for scheduled notebook updates is still under development.</p>
+<p>You can manually update your notebooks using the <code>Update Notebooks</code> button on the WP-Evernote settings panel.</p>
+<p>As mentioned before, notes are synced based on their Evernote guid. Any changes you make in Evernote will sync to the correct post. This helps to avoid duplicate posts.</p>
+<h3 id="conclusions">Conclusions</h3>
+<p>Despite some of the complications using api keys, we think this plugin will be an extremely useful tool for people who use Evernote and Wordpress. We are looking for testers so we can improve the user experience and add features. If you would like to help test or even contribute to the code, feel free to <a href="../../#contact">Contact</a> me.</p>
+<p>Cheers!</p>
+
+<hr>
+<!-- the comment box -->
+<div class="well">
+    <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'reichertbrothers'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+                </div>
+              </div><!-- /.col-xs-12 main -->
+          </div><!--/.row-->
+        </div><!--/.container-->
+        <div class="footer">
+          <div class="container" style="padding: 40px;">
+              Copyright © 2013-2014, Reichert Brothers LLC.
+              <br />
+               Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+          </div>
+        </div>
+      </div><!--/.page-container-->
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <script src="../../js/scripts.js"></script>
+    </body>
+</html>
