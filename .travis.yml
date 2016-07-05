@@ -14,10 +14,9 @@ before_install:
 
 install:
   - stack setup
-  - stack build --fast
 
 script:
-  - echo "Some build script here"
+  - stack build --fast
 
 after_success:
-  - echo "deploy here"
+  - ./scripts/deploy
