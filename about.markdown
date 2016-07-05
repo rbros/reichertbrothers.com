@@ -46,6 +46,8 @@ future for those willing to adopt Haskell in their business or organization.
 
 <a href="http://www.haskellers.com/user/3132"><img src="http://www.haskellers.com/static/badge.png" alt="I'm a Haskeller"></a>
 
+<iframe src="http://ghbtns.com/github-btn.html?user=CodyReichert&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"/>
+
 <a href="http://www.linkedin.com/pub/cody-reichert/2b/975/376">
   <img src="https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png" width="160" height="25" border="0" alt="View Cody Reichert's profile on LinkedIn">
 </a>
