@@ -17,6 +17,7 @@ install:
 
 script:
   - stack build --fast
+  - stack exec site build
 
 after_success:
   - bash $TRAVIS_BUILD_DIR/scripts/deploy.sh
