@@ -9,6 +9,7 @@ then
   exit 0
 fi
 
+# Create a deploy and get the ID so we can update it later
 DEPLOY_ID=$(curl -XPOST "https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments" -H "Content-Type:application/json" --data '{"ref":"master"}' | python2 -c "import json,sys;obj=json.load(sys.stdin);print obj['id'];")
 
 rev=$(git rev-parse --short HEAD)
