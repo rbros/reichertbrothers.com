@@ -12,6 +12,9 @@ fi
 DEPLOY_URL="https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments"
 echo $DEPLOY_URL
 
+DEPLOY_OUTPUT=$(curl -XPOST --verbose $DEPLOY_URL -H "Content-Type:application/json" --data '{"ref":"master"}')
+echo $DEPLOY_OUTPUT
+
 # Create a deploy and get the ID so we can update it later
 DEPLOY_ID=$(curl -XPOST --verbose $DEPLOY_URL -H "Content-Type:application/json" --data '{"ref":"master"}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['id'];")
 
