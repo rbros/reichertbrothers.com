@@ -47,4 +47,4 @@ cp -R $TRAVIS_BUILD_DIR/_site/* .
 
 git add -A .
 git commit -m "rebuild pages at ${rev}"
-git push -q upstream HEAD:gh-pages
+git push --allow-empty -q upstream HEAD:gh-pages
