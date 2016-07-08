@@ -9,18 +9,18 @@ then
   exit 0
 fi
 
-DEPLOY_URL="https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments"
-echo $DEPLOY_URL
-
-# Create a deploy and get the ID so we can update it later
-DEPLOY_ID=$(curl -XPOST --verbose $DEPLOY_URL -H "Content-Type:application/json" --data '{"ref":"master", "auto_merge":false, "required_contexts": []}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['id'];")
-
-echo $DEPLOY_ID
-
-# Update the deploy as success
-echo "Updating DEPLOYMENT: $DEPLOY_ID"
-DEPLOYED=$(curl -XPOST "https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments/$DEPLOY_ID/statuses" --data '{"state":"success"}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['state'];")
-echo $DEPLOYED
+# DEPLOY_URL="https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments"
+# echo $DEPLOY_URL
+#
+# # Create a deploy and get the ID so we can update it later
+# DEPLOY_ID=$(curl -XPOST --verbose $DEPLOY_URL -H "Content-Type:application/json" --data '{"ref":"master", "auto_merge":false, "required_contexts": []}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['id'];")
+#
+# echo $DEPLOY_ID
+#
+# # Update the deploy as success
+# echo "Updating DEPLOYMENT: $DEPLOY_ID"
+# DEPLOYED=$(curl -XPOST "https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments/$DEPLOY_ID/statuses" --data '{"state":"success"}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['state'];")
+# echo $DEPLOYED
 
 rev=$(git rev-parse --short HEAD)
 

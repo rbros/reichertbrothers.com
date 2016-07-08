@@ -19,5 +19,21 @@ script:
   - stack build --fast
   - stack exec site build
 
-after_success:
-  - bash $TRAVIS_BUILD_DIR/scripts/deploy.sh
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    branch: master
+
+after_deploy:
+  - |
+    # Make POST request URL
+    DEPLOY_URL="https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments"
+    echo $DEPLOY_URL
+    # POST a deployment and store the id
+    DEPLOY_ID=$(curl -XPOST --verbose $DEPLOY_URL -H "Content-Type:application/json" --data '{"ref":"master", "auto_merge":false, "required_contexts": []}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['id'];")
+    # Update the deployment with a success status
+    echo $DEPLOY_ID
+    DEPLOYED=$(curl -XPOST "https://$GH_TOKEN@api.github.com/repos/$TRAVIS_REPO_SLUG/deployments/$DEPLOY_ID/statuses" --data '{"state":"success"}' | python -c "import json,sys;obj=json.load(sys.stdin);print obj['state'];")
+    echo $DEPLOYED
